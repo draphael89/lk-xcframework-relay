@@ -1,0 +1,25 @@
+name: mirror
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch, verify, chunk, commit
+        run: |
+          set -euo pipefail
+          curl -sLO https://github.com/livekit/webrtc-xcframework/releases/download/144.7559.03/LiveKitWebRTC.xcframework.zip
+          curl -sLO https://github.com/livekit/livekit-uniffi-xcframework/releases/download/0.0.5/RustLiveKitUniFFI.xcframework.zip
+          echo "892898ba14293182d6821da68b413a60cff8157d65f380b7a423fdba07b2d4fd  LiveKitWebRTC.xcframework.zip" | sha256sum -c -
+          echo "9a21e046273f8804474eaf2532d67dc3a7d811b233d73e0115992bffd1942600  RustLiveKitUniFFI.xcframework.zip" | sha256sum -c -
+          mkdir -p chunks
+          split -b 45m LiveKitWebRTC.xcframework.zip chunks/webrtc.zip.part.
+          split -b 45m RustLiveKitUniFFI.xcframework.zip chunks/uniffi.zip.part.
+          ls -la chunks/ > chunks/manifest.txt
+          git config user.name "relay-bot"
+          git config user.email "relay@invalid"
+          git add chunks
+          git commit -m "mirror livekit binary artifacts as chunks"
+          git push
