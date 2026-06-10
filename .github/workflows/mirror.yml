@@ -15,8 +15,8 @@ jobs:
           echo "892898ba14293182d6821da68b413a60cff8157d65f380b7a423fdba07b2d4fd  LiveKitWebRTC.xcframework.zip" | sha256sum -c -
           echo "9a21e046273f8804474eaf2532d67dc3a7d811b233d73e0115992bffd1942600  RustLiveKitUniFFI.xcframework.zip" | sha256sum -c -
           mkdir -p chunks
-          split -b 18m LiveKitWebRTC.xcframework.zip chunks/webrtc.zip.part.
-          split -b 18m RustLiveKitUniFFI.xcframework.zip chunks/uniffi.zip.part.
+          split -b 9m LiveKitWebRTC.xcframework.zip chunks/webrtc.zip.part.
+          split -b 9m RustLiveKitUniFFI.xcframework.zip chunks/uniffi.zip.part.
           ls -la chunks/ > chunks/manifest.txt
           git config user.name "relay-bot"
           git config user.email "relay@invalid"
